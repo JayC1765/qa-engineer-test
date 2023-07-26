@@ -88,3 +88,33 @@ def test_create_user(clear_tables, db_session, sample_user_data):
 
     assert isinstance(result, User)
     assert result.username == sample_user_data.username
+
+
+# Test the get_user_by_id function with the user_id
+def test_get_user_by_id(clear_tables, db_session, sample_user_data):
+    # Create a user in the database
+    user_controller = UserController()
+    user_in_db = User(username="test_user")
+    db_session.add(user_in_db)
+    db_session.commit()
+    db_session.refresh(user_in_db)
+
+    # Test the get_user_by_id by passing the user_id
+    result = user_controller.get_user_by_id(db_session, user_in_db.id)
+    assert isinstance(result, User)
+    assert result.username == user_in_db.username
+
+
+# Test the get_user_by_username function with the username
+def test_get_user_by_username(clear_tables, db_session, sample_user_data):
+    # Create a user in the database
+    user_controller = UserController()
+    user_in_db = User(username="test_user")
+    db_session.add(user_in_db)
+    db_session.commit()
+    db_session.refresh(user_in_db)
+
+    # Test the get_user_by_id by passing the username
+    result = user_controller.get_user_by_username(db_session, user_in_db.username)
+    assert isinstance(result, User)
+    assert result.id == user_in_db.id
