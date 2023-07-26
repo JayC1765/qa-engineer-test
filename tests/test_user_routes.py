@@ -9,6 +9,7 @@ from main import app
 from fastapi.testclient import TestClient
 from models.users import User, UserSchemaBase
 from database.db import get_db
+import util
 
 client = TestClient(app)
 
@@ -47,7 +48,7 @@ def test_create_user_endpoint(clear_tables, sample_user_data):
 # Validate the endpoint for getting all users
 def test_get_all_users_endpoint(clear_tables, db_session):
     # Add 5 users to the database
-    add_users_to_db(db_session, 5)
+    util.add_users_to_db(db_session, 5)
 
     # Send a GET request to the /users endpoint
     response = client.get("/users")
@@ -56,14 +57,3 @@ def test_get_all_users_endpoint(clear_tables, db_session):
     # Test that the number of users created equals all users in the database
     data = response.json()
     assert len(data) == 5
-
-
-# Helper function to add a n # of unique users to the database
-def add_users_to_db(db, num):
-    for i in range(num):
-        username = f"user{i}"
-        new_user = User(username=username)
-        db.add(new_user)
-
-    db.commit()
-    db.refresh(new_user)

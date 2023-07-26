@@ -9,6 +9,7 @@ sys.path.append(parent_dir)
 from controllers import UserController
 from database.db import get_db
 from models.users import User, UserSchemaBase
+import util
 
 
 # Function that returns an instance of a database session
@@ -126,7 +127,7 @@ def test_get_all_users(clear_tables, db_session):
     user_controller = UserController()
 
     # Add 105 users to the database with add_users_db helper function
-    add_users_to_db(db_session, 105)
+    util.add_users_to_db(db_session, 105)
 
     # Validate that the limit is default to 100 users
     all_users_test1 = user_controller.get_users(db_session)
@@ -144,14 +145,3 @@ def test_get_all_users(clear_tables, db_session):
     # Validate that the skip and limit arguments to work together
     result = user_controller.get_users(db_session, 10, 1000)
     assert len(result) == 95
-
-
-# Helper function to add a n # of unique users to the database
-def add_users_to_db(db, num):
-    for i in range(num):
-        username = f"user{i}"
-        new_user = User(username=username)
-        db.add(new_user)
-
-    db.commit()
-    db.refresh(new_user)
