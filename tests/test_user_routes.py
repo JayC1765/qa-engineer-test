@@ -57,3 +57,8 @@ def test_get_all_users_endpoint(clear_tables, db_session):
     # Test that the number of users created equals all users in the database
     data = response.json()
     assert len(data) == 5
+
+
+# Validate the endpoint for getting all loans for a particular user
+def test_get_user_loans(clear_tables, db_session):
+    pass
