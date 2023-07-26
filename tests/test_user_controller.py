@@ -23,6 +23,7 @@ def sample_user_data():
     return UserSchemaBase(username="test_user")
 
 
+# Function to clear the data in the User table
 @pytest.fixture
 def clear_tables(db_session):
     db_session.query(User).delete()
