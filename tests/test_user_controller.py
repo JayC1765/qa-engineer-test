@@ -118,3 +118,39 @@ def test_get_user_by_username(clear_tables, db_session, sample_user_data):
     result = user_controller.get_user_by_username(db_session, user_in_db.username)
     assert isinstance(result, User)
     assert result.id == user_in_db.id
+
+
+# Test the get_users function by retrieving all users in the database
+def test_get_all_users(clear_tables, db_session):
+    user_controller = UserController()
+
+    # Add 105 users to the database with add_users_db helper function
+    add_users_to_db(db_session, 105)
+
+    # Validate that the limit is default to 100 users
+    all_users_test1 = user_controller.get_users(db_session)
+    assert len(all_users_test1) == 100
+
+    # Validate that the limit can be greater than 100
+    all_users_test2 = user_controller.get_users(db_session, limit=105)
+    assert len(all_users_test2) == 105
+
+    # Validate that the skip argument is skipping the n # of users
+    all_users_test3 = user_controller.get_users(db_session, skip=1)
+    assert len(all_users_test3) == 100
+    assert all_users_test3[0].username == "user1"
+
+    # Validate that the skip and limit arguments to work together
+    result = user_controller.get_users(db_session, 10, 1000)
+    assert len(result) == 95
+
+
+# Helper function to add a n # of unique users to the database
+def add_users_to_db(db, num):
+    for i in range(num):
+        username = f"user{i}"
+        new_user = User(username=username)
+        db.add(new_user)
+
+    db.commit()
+    db.refresh(new_user)
