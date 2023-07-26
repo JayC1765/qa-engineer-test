@@ -79,3 +79,12 @@ def test_validate_user_existing_username(clear_tables, db_session, sample_user_d
     assert response is not None
     assert response.status_code == 409
     assert response.detail == "Username already exists"
+
+
+# Test the create_user to create a user in the database
+def test_create_user(clear_tables, db_session, sample_user_data):
+    user_controller = UserController()
+    result = user_controller.create_user(db_session, sample_user_data)
+
+    assert isinstance(result, User)
+    assert result.username == sample_user_data.username
