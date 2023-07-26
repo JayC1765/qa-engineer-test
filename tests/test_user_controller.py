@@ -44,3 +44,13 @@ def test_validate_user_invalid_input(db_session):
     response = user_controller.validate_user(db_session, invalid_data)
     assert response.status_code == 422
     assert response.detail == "Username must be a string"
+
+
+# Test the validate_user function for username less than 3 characters
+def test_validate_user_short_username(db_session):
+    user_controller = UserController()
+    invalid_data = UserSchemaBase(username="ab")
+    response = user_controller.validate_user(db_session, invalid_data)
+    assert response is not None
+    assert response.status_code == 422
+    assert response.detail == "Username must be at least 3 characters"
